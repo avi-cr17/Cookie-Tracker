@@ -1,23 +1,19 @@
-import React from 'react'
-import { useState,useEffect } from 'react'
-import list from '../services/CookiesService';
+import React, { useEffect } from 'react'
+
+
 import Box from '../components/Box';
 
+import { connect } from 'react-redux';
+import { fetchPosts } from '../Action/PostActions';
 
-const Home = () => {
+const Home = (props) => {
 
-    const [cookies,setCookies]=useState({});
+    
 
    
 
-    useEffect(()=>{
-
-        list.then(data =>{
-            //cookies = data;
-            setCookies(data.data);
-            console.log(data.data);
-        })
-
+    useEffect( ()=>{
+        props.fetchPosts();
     },[]);
 
     return (
@@ -26,10 +22,10 @@ const Home = () => {
 
         <div className="row d-flex justify-content-center align-items-center h-100 w-100" >
           {
-              Object.keys(cookies).map((cookie,i)=>(
+              Object.keys(props.cookies).map((cookie,i)=>(
 
                 <div className=' box m-5 col-7' key={i}>
-                <Box  name={cookies[cookie].title} value={cookies[cookie].title} body={cookies[cookie].body} id={cookies[cookie].id} >
+                <Box  name={props.cookies[cookie].title} value={props.cookies[cookie].title} body={props.cookies[cookie].body} id={props.cookies[cookie].id} >
                 </Box>
                
                 </div>
@@ -40,6 +36,12 @@ const Home = () => {
         </div>
         
     )
+
+    
 }
 
-export default Home
+const mapStateToProps = (state) =>({
+    cookies : state.posts.items
+});
+
+export default connect(mapStateToProps , { fetchPosts})(Home);
